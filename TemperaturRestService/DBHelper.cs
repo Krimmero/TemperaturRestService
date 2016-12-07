@@ -15,37 +15,48 @@ namespace TemperaturRestService
         {
             using (SqlConnection connection = new SqlConnection(connectionstring))
             {
-                connection.Open();
-
-
-                string sql = "SELECT *  FROM Temperatur";
-                SqlCommand cmd = new SqlCommand(sql, connection);
-
-
-                //cmd.CommandType = CommandType.Text;
-                //cmd.ExecuteNonQuery();
-
-                List<Temperatur> temperaturList = new List<Temperatur>();
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
+                try
                 {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            Temperatur temps = new Temperatur();
-                            temps.DatoTid = reader.GetDateTime(1);
-                            temps.Sted = reader.GetString(2);
-                            temps.Inde = reader.GetBoolean(3);
-                            temps.Ude = reader.GetBoolean(4);
-                            temps.Temp = reader.GetDouble(5);
-                            temps.Kommentar = reader.GetString(6);
-                            temperaturList.Add(temps);
-                        }
-                    }
+                    connection.Open();
 
+
+                    string sql = "SELECT *  FROM Temperatur";
+                    SqlCommand cmd = new SqlCommand(sql, connection);
+
+
+                    //cmd.CommandType = CommandType.Text;
+                    //cmd.ExecuteNonQuery();
+
+                    List<Temperatur> temperaturList = new List<Temperatur>();
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                Temperatur temps = new Temperatur();
+                                temps.DatoTid = reader.GetDateTime(1);
+                                temps.Sted = reader.GetString(2);
+                                temps.Inde = reader.GetBoolean(3);
+                                temps.Ude = reader.GetBoolean(4);
+                                temps.Temp = reader.GetDouble(5);
+                                temps.Kommentar = reader.GetString(6);
+                                temperaturList.Add(temps);
+                            }
+                        }
+
+                    }
+                    return temperaturList;
                 }
-                return temperaturList;
+                catch (Exception ex)
+                {
+                    throw new ArgumentException("Der skete en fejl da objektet skulle vises" + ex.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
             }
         }
     }
